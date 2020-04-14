@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,9 +120,10 @@
 </head>
 <body>
     <div class='topnav'>
-      <a href=test3>Startpagina</a>
-      <a href=test1>Inloggen</a>
-      <a href=test2>Registreren</a>
+      <a href=#>Startpagina</a>
+      <a href=Login.php>Inloggen</a>
+      <a href=Registratie.php>Registreren</a>
+      <a href=account.php>Account</a>
         <div class="search-container">
             <form action="/action_page.php">
               <input type="text" placeholder="Zoeken.." name="search">
@@ -148,17 +152,20 @@
       <br>
       <br>
       <br>
-      <button class='labels' type="submit" class="signupbtn">Registreren</button>
+      <button class='labels' type="submit" class="signupbtn" name="register">Registreren</button>
         </div>
 </body>
 <?php
+if(array_key_exists('register', $_POST)) {
+    register();
+}
 
 function register()
 {
-  $user = "student";
-  $password = "student";
-  $host = "localhost";
-  $dbase = "TodoDb";
+  $user = "????";
+  $password = "????";
+  $host = "????";
+  $dbase = "????";
   
   
   // Verbinden met database
@@ -174,22 +181,28 @@ function register()
       }
   }
 
-    if (isset($_POST['naam'])) {
-        $username = test_input($_POST['naam']);
+    if (isset($_POST['email'])) {
+        $email = test_input($_POST['email']);
     }
-    if (isset($_POST['password'])) {
-        $password1 = test_input($_POST['password']);
+    if (isset($_POST['psw'])) {
+        $password1 = test_input($_POST['psw']);
     }
-    if (isset($_POST['passwordconfirm'])) {
-        $passwordconfirm = test_input($_POST['passwordconfirm']);
+    if (isset($_POST['psw-repeat'])) {
+        $passwordconfirm = test_input($_POST['psw-repeat']);
     }
 
 
     if ($password1 != $passwordconfirm) {
         echo "Wachtwoorden zijn niet hetzelfde";
-    } else {
-        $registerquery = $dbc->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $registerquery->bind_param("ss", $username, $password1);
+    }
+    elseif (strpos($email, '@student.nhlstenden.com') == false || strpos($email, '@nhlstenden.com') == false )
+    {
+        echo "Registreer alstublieft met een nhlstenden emailadres";
+    }
+    else {
+        $passwordhash = password_hash($password1);
+        $registerquery = $dbc->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
+        $registerquery->bind_param("ss", $email, $passwordhash);
         if ($registerquery->execute() == true) {
             $registerquery->execute();
             echo "Registeren gelukt!";

@@ -1,9 +1,12 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Inloggen</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -117,9 +120,9 @@
 </head>
 <body>
     <div class='topnav'>
-        <a href=test3>Startpagina</a>
-        <a href=test1>Inloggen</a>
-        <a href=test2>Registreren</a>
+        <a href=#>Startpagina</a>
+        <a href=Login.php>Inloggen</a>
+        <a href=Registratie.php>Registreren</a>
         <div class="search-container">
             <form action="/action_page.php">
               <input type="text" placeholder="Zoeken.." name="search">
@@ -143,7 +146,62 @@
       <br>
       <br>
       <br>
-      <button class='labels' type="submit" class="signupbtn">Inloggen</button>
+      <button class='labels' name="login" type="submit" class="signupbtn">Inloggen</button>
         </div>
 </body>
+<?
+if(array_key_exists('login', $_POST)) {
+    login();
+}
+
+function login()
+{
+    $user = "????";
+    $password = "????";
+    $host = "????";
+    $dbase = "????";
+
+
+    // Verbinden met database
+    $dbc = mysqli_connect($host, $user, $password, $dbase)
+    or die("Unable to select database");
+
+
+
+    if (isset($_POST['email'])) {
+        $email = test_input($_POST['email']);
+    }
+    if (isset($_POST['password'])) {
+        $password1 = test_input($_POST['psw']);
+    }
+
+    $numberquery = "SELECT code FROM users WHERE email = '$email'";
+    $numberresult = mysqli_query($dbc, $numberquery);
+
+
+    $nrrow = mysqli_fetch_array($numberresult);
+    $code = $nrrow['code'];
+
+
+    $inlogquery = $dbc->prepare("SELECT email, password FROM users WHERE email = ? AND password = ?");
+    $inlogquery->bind_param("ss", $email, $password1);
+    $inlogquery->execute();
+    $result = $inlogquery->get_result() or die("Error");
+
+
+    $rows = mysqli_num_rows($result);
+    if ($rows == 1)
+    {
+        $_SESSION["email"] = "$email";
+        $_SESSION["code"] = "$code";
+        header('Location: http://student.local/account.php');
+    }
+    else {
+        echo "Verkeerde gebruikersnaam en/of wachtwoord";
+    }
+
+
+    $dbc->close();
+}
+?>
 </html>
