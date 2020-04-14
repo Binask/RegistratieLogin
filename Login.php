@@ -156,10 +156,10 @@ if(array_key_exists('login', $_POST)) {
 
 function login()
 {
-    $user = "????";
-    $password = "????";
-    $host = "????";
-    $dbase = "????";
+    $user = "student";
+    $password = "student";
+    $host = "localhost";
+    $dbase = "TodoDB";
 
 
     // Verbinden met database

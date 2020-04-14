@@ -162,10 +162,10 @@ if(array_key_exists('register', $_POST)) {
 
 function register()
 {
-  $user = "????";
-  $password = "????";
-  $host = "????";
-  $dbase = "????";
+  $user = "student";
+  $password = "student";
+  $host = "localhost";
+  $dbase = "TodoDB";
   
   
   // Verbinden met database
